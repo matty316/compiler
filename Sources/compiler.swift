@@ -9,7 +9,13 @@
 struct Compiler {
     static func main() {
         var chunk = Chunk()
-        chunk.writeChunk(byte: .ret)
+        let constant = chunk.addConstant(1.2)
+        
+        chunk.write(OpCode.constant.rawValue, line: 123)
+        chunk.write(constant, line: 123)
+        
+        chunk.write(OpCode.ret.rawValue, line: 123)
+        
         chunk.disassemble(name: "test chunk")
     }
 }

@@ -6,10 +6,18 @@
 //
 
 struct Chunk {
-    private(set) var code = [OpCode]()
+    private(set) var code = [UInt8]()
+    private(set) var lines = [Int]()
+    private(set) var constants = [Value]()
     
-    mutating func writeChunk(byte: OpCode) {
+    mutating func write(_ byte: UInt8, line: Int) {
         code.append(byte)
+        lines.append(line)
+    }
+    
+    mutating func addConstant(_ constant: Value) -> UInt8 {
+        constants.append(constant)
+        return UInt8(constants.count - 1)
     }
 }
 
@@ -20,9 +28,10 @@ extension Chunk {
         
         var offset = 0
         while offset < code.count {
-            let op = code[offset]
-            print("\(offset)", terminator: " ")
-            offset = op.disassemble(offset: offset)
+            if let op = OpCode(rawValue: code[offset]) {
+                print("\(offset)", terminator: " ")
+                offset = op.disassemble(chunk: self, offset: offset)
+            }
         }
     }
 }
