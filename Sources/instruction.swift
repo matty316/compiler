@@ -9,6 +9,12 @@ enum OpCode: UInt8 {
     case ret, constant
     
     func disassemble(chunk: Chunk, offset: Int) -> Int {
+        if offset > 0 && chunk.lines[offset] == chunk.lines[offset - 1] {
+            print("|", terminator: " ")
+        } else {
+            print("\(chunk.lines[offset])", terminator: " ")
+        }
+        
         switch self {
         case .ret:
             return simpleInstruction(name: "OP_RETURN", offset: offset)
